@@ -6,7 +6,7 @@ jobs:
   scan:
     steps:
       - name: Initiate execution plan
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:5d8f3b2132ffe59302d85d05e547ed14404f9c93
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
         id: plan
         with:
           entrypoint: assets-plugin-chain-utils
