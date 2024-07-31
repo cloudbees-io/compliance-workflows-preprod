@@ -1,0 +1,62 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name:  scan
+
+jobs:
+  scan:
+    steps:
+      - name: Initiate execution plan
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:5d8f3b2132ffe59302d85d05e547ed14404f9c93
+        id: plan
+        with:
+          entrypoint: assets-plugin-chain-utils
+          args: configure
+        env:
+          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
+          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
+          INPUT_RUN_ID: ${{ cloudbees.run_id }}
+
+      - name: Github Inventory
+        if: ${{ steps.plan.outputs.github-master == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+        run: /app/plugin-git-master -mode single
+
+      - name: Github Metadata
+        if: ${{ steps.plan.outputs.github-decorator == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+        run: /app/plugin-git-decorator -mode single
+
+      - name: SCC Scanner
+        if: ${{ steps.plan.outputs.scc == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:latest
+        run: /app/plugin-scc-scanner -mode single
+
+      - name: GoSec Scanner
+        if: ${{ steps.plan.outputs.gosec == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gosec-scanner:latest
+        run: /app/plugin-gosec-scanner -mode single
+
+#      - name: FindSecBugs Scanner
+#        if: ${{ steps.plan.outputs.findsecbugs == 'true' }}
+#        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
+#        run: /app/plugin-findsecbugs -mode single
+
+      - name: Gitleaks Scanner
+        if: ${{ steps.plan.outputs.gitleaks == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitleaks-scanner:latest
+        run: /app/plugin-gitleaks-scanner -mode single
+
+      - name: Complete execution plan
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+        id: process-outputs
+        with:
+          entrypoint: assets-plugin-chain-utils
+          args: process-outputs
+        env:
+          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
+          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
+          INPUT_RUN_ID: ${{ cloudbees.run_id }}
