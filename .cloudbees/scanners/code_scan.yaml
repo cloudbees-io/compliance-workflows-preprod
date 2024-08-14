@@ -19,15 +19,15 @@ jobs:
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-master == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:latest
-        env:
-          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+#        env:
+#          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
         run: /app/plugin-git-master -mode single
 
       - name: Github Metadata
         if: ${{ steps.plan.outputs.github-decorator == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:latest
-        env:
-          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+#        env:
+#          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
         run: /app/plugin-git-decorator -mode single
 
       - name: SCC Scanner
