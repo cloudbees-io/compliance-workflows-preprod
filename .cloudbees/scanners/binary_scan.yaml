@@ -15,7 +15,8 @@ jobs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
-          INPUT_PLUGIN_LIST: 'gosec,njsscan,gitleaks'
+          INPUT_PLUGIN_LIST: "gosec,njsscan,gitleaks"
+          INPUT_DEBUG: "true"
     # - id: downloadWorkflowArtifact
     #   name: Download workflow artifact
     #   uses: docker://alpine/curl:latest
