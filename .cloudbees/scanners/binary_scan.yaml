@@ -24,19 +24,3 @@ jobs:
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
-      - id: downloadWorkflowArtifact
-        name: Download workflow artifact
-        uses: docker://alpine/curl:latest
-        run: |
-          dev=$(echo $JWT | base64)
-          echo $dev
-          echo "$URL/v1/workflows/$WORKFLOW_ID/runs/$RUN_ID/attempts/1/jobs/$JOB_ID/artifacts/download?componentId=$COMPONENT_ID&fileArtifactName=10kb.dat" -H "Authorization: Bearer $JWT" -H 'Content-Type: application/json'
-          # curl -i -X 'GET' "$URL/v1/workflows/7cd88056-6bef-4fdc-aeec-756922b44a9b/runs/$RUN_ID/attempts/1/jobs/$JOB_ID/artifacts/download?componentId=d9ccc8a5-c5f9-4552-8a71-eae869b04a9c&fileArtifactName=10kb.dat" -H "Authorization: Bearer $JWT" -H 'Content-Type: application/json'
-        env:
-          RUN_ID: ${{ cloudbees.run_id }}
-          JOB_ID: ${{ job.id }}
-          STEP_ID: ${{ step.id }}
-          JWT: ${{ steps.plan.outputs.wf_artifact_token }}
-          COMPONENT_ID: ${{ component.id }}
-          WORKFLOW_ID: ${{ cloudbees.workflow_id }}
-          URL: ${{ cloudbees.api.url }}
