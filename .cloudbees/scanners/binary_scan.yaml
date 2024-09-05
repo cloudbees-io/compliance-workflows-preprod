@@ -22,7 +22,7 @@ jobs:
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
-        run: /app/plugin-findsecbugs -mode single
+        run: /app/plugin-cbp-workflow-artifacts -mode single
     # - id: downloadWorkflowArtifact
     #   name: Download workflow artifact
     #   uses: docker://alpine/curl:latest
