@@ -24,3 +24,17 @@ jobs:
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
+      - name: Trivy Scanner
+        #if: ${{ steps.plan.outputs.trivy == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-trivy-scanner:latest
+        run: /app/plugin-trivy-scanner -mode single
+      - name: Complete execution plan
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+        id: process-outputs
+        with:
+          entrypoint: assets-plugin-chain-utils
+          args: process-outputs
+        env:
+          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
+          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
+          INPUT_RUN_ID: ${{ cloudbees.run_id }}
