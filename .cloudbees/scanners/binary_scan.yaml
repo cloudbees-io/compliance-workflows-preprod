@@ -23,7 +23,7 @@ jobs:
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
           EXECUTION_ROLE: "MASTER"
-        uses: 020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
       - name: Workflow Artifact Metadata
         #if: ${{ steps.plan.outputs.wfartifact-decorator == 'true' }}
@@ -32,7 +32,7 @@ jobs:
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
           EXECUTION_ROLE: "DECORATOR"
-        uses: 020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
       - name: Trivy Scanner
         #if: ${{ steps.plan.outputs.trivy == 'true' }}
