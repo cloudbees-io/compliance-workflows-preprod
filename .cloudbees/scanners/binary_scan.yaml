@@ -15,7 +15,7 @@ jobs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
-          INPUT_PLUGIN_LIST: 'trivy'
+          INPUT_PLUGIN_LIST: 'trivy,findsecbugs'
       - name: Workflow Artifact Inventory
         if: ${{ steps.plan.outputs.wfartifact-master == 'true' }}
         env:
@@ -40,7 +40,7 @@ jobs:
         run: /app/plugin-trivy-scanner -mode single
 
       - name: FindSecBugs Scanner
-        # if: ${{ steps.plan.outputs.findsecbugs == 'true' }}
+        if: ${{ steps.plan.outputs.findsecbugs == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
         run: /app/plugin-findsecbugs -mode single
 
