@@ -45,10 +45,6 @@ jobs:
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
         run: /app/plugin-findsecbugs -mode single
 
-      - name: Syft SBOM analyser
-        if: ${{ steps.plan.outputs.syft == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-syft-sbom:latest
-        run: /app/plugin-syftbom-analyser -mode single
 
       - name: Grype Scanner
         if: ${{ steps.plan.outputs.grype == 'true' }}
