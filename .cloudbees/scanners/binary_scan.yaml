@@ -16,6 +16,7 @@ jobs:
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
           INPUT_PLUGIN_LIST: 'trivy,findsecbugs,syft,grype'
+          INPUT_DEBUG: "true"
       - name: Workflow Artifact Inventory
         if: ${{ steps.plan.outputs.wfartifact-master == 'true' }}
         env:
