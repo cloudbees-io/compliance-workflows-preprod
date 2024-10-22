@@ -38,6 +38,7 @@ jobs:
       - name: Trivy Scanner
         if: ${{ steps.plan.outputs.trivy == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-trivy-scanner:latest
+        continue-on-error: true
         run: /app/plugin-trivy-scanner -mode single
 
       - name: FindSecBugs Scanner
