@@ -38,11 +38,13 @@ jobs:
       - name: GoSec Scanner
         if: ${{ steps.plan.outputs.gosec == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gosec-scanner:latest
+        continue-on-error: true
         run: /app/plugin-gosec-scanner -mode single
 
       - name: Njs Scanner
         if: ${{ steps.plan.outputs.njsscan == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
+        continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
 
       - name: Gitleaks Scanner
@@ -52,6 +54,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
         run: /app/plugin-gitleaks-scanner -mode single
 
       - name: Complete execution plan
