@@ -56,6 +56,12 @@ jobs:
           STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-gitleaks-scanner -mode single
+      
+      - name: Checkov Scanner
+        if: ${{ steps.plan.outputs.checkov == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:latest
+        continue-on-error: true
+        run: /app/plugin-checkov -mode single
 
       - name: Complete execution plan
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:59cf7112b01c107036fb32dbb272402525a50ba0
