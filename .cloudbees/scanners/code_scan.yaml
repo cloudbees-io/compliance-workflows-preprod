@@ -15,7 +15,7 @@ jobs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
-          INPUT_PLUGIN_LIST: 'gosec,njsscan,gitleaks,checkov'
+          INPUT_PLUGIN_LIST: 'gosec,njsscan,gitleaks,checkov,sonar'
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-master == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:latest
@@ -61,7 +61,7 @@ jobs:
         if: ${{ steps.plan.outputs.sonar == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonar-scanner:latest
         env:
-          SONARQUBE_PROPS: ${{ steps.plan.outputs.sonarqube_props }}
+          SONARQUBE_PROPS: ${{ steps.plan.outputs.sonarqube-props }}
         run: /app/plugin-sonar-scanner -mode single
       
       - name: Checkov Scanner
