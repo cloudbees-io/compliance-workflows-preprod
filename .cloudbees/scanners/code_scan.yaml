@@ -49,7 +49,7 @@ jobs:
 
       - name: Gitleaks Scanner
 #        if: ${{ steps.plan.outputs.gitleaks == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitleaks-scanner:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitleaks-scanner:0a38a6261dc19b28fa10f612d4e32312d04fb82d
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
