@@ -58,7 +58,7 @@ jobs:
         run: /app/plugin-gitleaks-scanner -mode single
 # Need to revert back into  the correct image name once the image has been successfully created
       - name: Sonar Scanner
-        if: ${{ cloudbees.component_id == 'a52d132a-a71c-4ce8-bfdf-c8ae735306b9' }}
+        if: ${{ cloudbees.scm.repository == 'goutham-cbees/sample-go-app' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
         continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
