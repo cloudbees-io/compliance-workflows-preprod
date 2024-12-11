@@ -61,7 +61,7 @@ jobs:
         if: ${{ cloudbees.scm.repository == 'goutham-cbees/sample-go-app' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
         env:
-          SONARQUBE_PROPS : ${{ steps.plan.outputs.sonarqube-props}}
+          SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
         continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
 
