@@ -58,7 +58,7 @@ jobs:
         run: /app/plugin-gitleaks-scanner -mode single
 # Need to revert back into  the correct image name once the image has been successfully created
       - name: Sonar Scanner
-        if: ${{ cloudbees.scm.repository == 'goutham-cbees/sample-go-app' }}
+        if: ${{ cloudbees.scm.repository == 'goutham-cbees/sample-go-app' ||  cloudbees.scm.repository == 'cbc-sonarqube/cpython' || cloudbees.scm.repository == 'cbc-sonarqube/django14mb' || cloudbees.scm.repository == 'cbc-sonarqube/go-repo-for-sonar' || cloudbees.scm.repository == 'cbc-sonarqube/python-mini-projects' || cloudbees.scm.repository == 'cbc-sonarqube/vulnerabilitydataset' || cloudbees.scm.repository == 'cbc-sonarqube/vulpy'}}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
