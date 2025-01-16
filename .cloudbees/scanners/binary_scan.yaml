@@ -6,7 +6,7 @@ jobs:
   scan:
     steps:
       - name: Initiate execution plan
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:5027673eb01bf99931a5a181bdc2cffbd985a908
         id: plan
         with:
           entrypoint: assets-plugin-chain-utils
@@ -60,7 +60,7 @@ jobs:
         run: /app/plugin-grype-scanner -mode single
 
       - name: Complete execution plan
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:5027673eb01bf99931a5a181bdc2cffbd985a908
         id: process-outputs
         with:
           entrypoint: assets-plugin-chain-utils
