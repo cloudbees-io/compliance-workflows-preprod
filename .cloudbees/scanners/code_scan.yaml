@@ -79,7 +79,7 @@ jobs:
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
         continue-on-error: true
-        run: /app/plugin-njsscan-scanner -mode single
+        run: /app/plugin-sonarqube-scanner -mode single
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
