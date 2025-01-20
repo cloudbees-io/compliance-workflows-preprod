@@ -31,7 +31,7 @@ jobs:
         run: /app/plugin-git-decorator -mode single
 
       - name: Bitbucket Inventory
-        if: ${{ steps.plan.outputs.bitbucket-master == 'true' }}
+        if: ${{ steps.plan.outputs.bitbucket-inventory == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
