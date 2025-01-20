@@ -15,7 +15,7 @@ jobs:
           INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_RUN_ID: ${{ cloudbees.run_id }}
-          INPUT_PLUGIN_LIST: 'gosec,njsscan,gitleaks,checkov,sonar'
+          INPUT_PLUGIN_LIST: 'github-master,github-decorator,bitbucket-master,bitbucket-decorator,gosec,njsscan,gitleaks,checkov,sonar'
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-inventory == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:latest
@@ -29,6 +29,22 @@ jobs:
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
         run: /app/plugin-git-decorator -mode single
+
+      - name: Bitbucket Inventory
+        if: ${{ steps.plan.outputs.bitbucket-master == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "MASTER"
+        run: /app/plugin-bitbucket -mode single
+
+      - name: Bitbucket Metadata
+        if: ${{ steps.plan.outputs.bitbucket-decorator == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "DECORATOR"
+        run: /app/plugin-bitbucket -mode single
 
       - name: SCC Scanner
         if: ${{ steps.plan.outputs.scc == 'true' }}
@@ -59,11 +75,11 @@ jobs:
 # Need to revert back into  the correct image name once the image has been successfully created
       - name: Sonar Scanner
         if: ${{ cloudbees.scm.repository == 'goutham-cbees/sample-go-app' ||  cloudbees.scm.repository == 'cbc-sonarqube/cpython' || cloudbees.scm.repository == 'cbc-sonarqube/django14mb' || cloudbees.scm.repository == 'cbc-sonarqube/go-repo-for-sonar' || cloudbees.scm.repository == 'cbc-sonarqube/python-mini-projects' || cloudbees.scm.repository == 'cbc-sonarqube/vulnerabilitydataset' || cloudbees.scm.repository == 'cbc-sonarqube/vulpy'}}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
         continue-on-error: true
-        run: /app/plugin-njsscan-scanner -mode single
+        run: /app/plugin-sonarqube-scanner -mode single
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
