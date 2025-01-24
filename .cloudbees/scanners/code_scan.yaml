@@ -6,7 +6,7 @@ jobs:
   scan:
     steps:
       - name: Initiate execution plan
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+        uses: docker.preprod.ecr/actions/assets-plugin-chain-utils:latest
         id: plan
         with:
           entrypoint: assets-plugin-chain-utils
@@ -18,21 +18,21 @@ jobs:
           INPUT_PLUGIN_LIST: 'github-inventory,github-decorator,bitbucket-inventory,bitbucket-decorator,gosec,njsscan,gitleaks,checkov,sonar'
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-inventory == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:latest
+        uses: docker.preprod.ecr/actions/assets-github-inventory:latest
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
         run: /app/plugin-git-master -mode single
 
       - name: Github Metadata
         if: ${{ steps.plan.outputs.github-decorator == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:latest
+        uses: docker.preprod.ecr/actions/assets-github-metadata:latest
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
         run: /app/plugin-git-decorator -mode single
 
       - name: Bitbucket Inventory
         if: ${{ steps.plan.outputs.bitbucket-inventory == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
+        uses: docker.preprod.ecr/actions/assets-bitbucket-server:latest
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
           EXECUTION_ROLE: "MASTER"
@@ -40,7 +40,7 @@ jobs:
 
       - name: Bitbucket Metadata
         if: ${{ steps.plan.outputs.bitbucket-decorator == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
+        uses: docker.preprod.ecr/actions/assets-bitbucket-server:latest
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
           EXECUTION_ROLE: "DECORATOR"
@@ -48,24 +48,24 @@ jobs:
 
       - name: SCC Scanner
         if: ${{ steps.plan.outputs.scc == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:latest
+        uses: docker.preprod.ecr/actions/assets-scc-scanner:latest
         run: /app/plugin-scc-scanner -mode single
 
       - name: GoSec Scanner
         if: ${{ steps.plan.outputs.gosec == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gosec-scanner:latest
+        uses: docker.preprod.ecr/actions/assets-gosec-scanner:latest
         continue-on-error: true
         run: /app/plugin-gosec-scanner -mode single
 
       - name: Njs Scanner
         if: ${{ steps.plan.outputs.njsscan == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
+        uses: docker.preprod.ecr/actions/assets-njsscan-scanner:latest
         continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
 
       - name: Gitleaks Scanner
         if: ${{ steps.plan.outputs.gitleaks == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitleaks-scanner:0a38a6261dc19b28fa10f612d4e32312d04fb82d
+        uses: docker.preprod.ecr/actions/assets-gitleaks-scanner:0a38a6261dc19b28fa10f612d4e32312d04fb82d
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
@@ -75,7 +75,7 @@ jobs:
 # Need to revert back into  the correct image name once the image has been successfully created
       - name: Sonar Scanner
         if: ${{ cloudbees.scm.repository == 'goutham-cbees/sample-go-app' ||  cloudbees.scm.repository == 'cbc-sonarqube/cpython' || cloudbees.scm.repository == 'cbc-sonarqube/django14mb' || cloudbees.scm.repository == 'cbc-sonarqube/go-repo-for-sonar' || cloudbees.scm.repository == 'cbc-sonarqube/python-mini-projects' || cloudbees.scm.repository == 'cbc-sonarqube/vulnerabilitydataset' || cloudbees.scm.repository == 'cbc-sonarqube/vulpy'}}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
+        uses: docker.preprod.ecr/actions/assets-sonarqube-scanner:latest
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
         continue-on-error: true
@@ -83,12 +83,12 @@ jobs:
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:latest
+        uses: docker.preprod.ecr/actions/assets-checkov-scanner:latest
         continue-on-error: true
         run: /app/plugin-checkov -mode single
 
       - name: Complete execution plan
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-plugin-chain-utils:latest
+        uses: docker.preprod.ecr/actions/assets-plugin-chain-utils:latest
         id: process-outputs
         with:
           entrypoint: assets-plugin-chain-utils
