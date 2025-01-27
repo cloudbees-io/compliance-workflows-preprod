@@ -34,10 +34,10 @@ jobs:
           EXECUTION_ROLE: "DECORATOR"
         uses: docker://docker.preprod.ecr/actions/assets-cbp-workflow-artifacts:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
-
+        #Note: Please do not revert back the tag to latest, hot fix branch for the demo
       - name: Trivy Scanner
         if: ${{ steps.plan.outputs.trivy == 'true' }}
-        uses: docker://docker.preprod.ecr/actions/assets-trivy-scanner:latest
+        uses: docker://docker.preprod.ecr/actions/assets-trivy-scanner:90ac7296abb2c0c877b3364b5ce21ccf50cb0353
         continue-on-error: true
         run: /app/plugin-trivy-scanner -mode single
 
@@ -52,6 +52,7 @@ jobs:
         uses: docker://docker.preprod.ecr/actions/assets-syft-sbom:latest
         continue-on-error: true
         run: /app/plugin-syftbom-analyser -mode single
+      #Note: Please do not revert back the tag to latest, hot fix branch for the demo
 
       - name: Grype Scanner
         if: ${{ steps.plan.outputs.grype == 'true' }}
