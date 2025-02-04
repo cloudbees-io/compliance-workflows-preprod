@@ -49,17 +49,29 @@ jobs:
       - name: SCC Scanner
         if: ${{ steps.plan.outputs.scc == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-scc-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         run: /app/plugin-scc-scanner -mode single
 
       - name: GoSec Scanner
         if: ${{ steps.plan.outputs.gosec == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-gosec-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-gosec-scanner -mode single
 
       - name: Njs Scanner
         if: ${{ steps.plan.outputs.njsscan == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-njsscan-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
 
@@ -77,12 +89,19 @@ jobs:
         uses: docker://docker.preprod.ecr/actions/assets-sonarqube-scanner:latest
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-sonarqube-scanner -mode single
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-checkov-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-checkov -mode single
 
