@@ -38,18 +38,30 @@ jobs:
       - name: Trivy Scanner
         if: ${{ steps.plan.outputs.trivy == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-trivy-scanner:90ac7296abb2c0c877b3364b5ce21ccf50cb0353
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-trivy-scanner -mode single
 
       - name: FindSecBugs Scanner
         if: ${{ steps.plan.outputs.findsecbugs == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-findsecbugs-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-findsecbugs -mode single
 
       - name: Syft SBOM analyser
         if: ${{ steps.plan.outputs.syft == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-syft-sbom:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-syftbom-analyser -mode single
       #Note: Please do not revert back the tag to latest, hot fix branch for the demo
@@ -57,6 +69,10 @@ jobs:
       - name: Grype Scanner
         if: ${{ steps.plan.outputs.grype == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-grype-scanner:24c5c03b4793488b64cfb076262f28b81727cdf6
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-grype-scanner -mode single
 
