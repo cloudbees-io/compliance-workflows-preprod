@@ -6,16 +6,11 @@ jobs:
   scan:
     steps:
       - name: Initiate execution plan
-        uses: docker://docker.preprod.ecr/actions/assets-plugin-chain-utils:latest
+        uses: cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
         with:
-          entrypoint: assets-plugin-chain-utils
-          args: configure
-        env:
-          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
-          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
-          INPUT_RUN_ID: ${{ cloudbees.run_id }}
-          INPUT_PLUGIN_LIST: 'github-inventory,github-decorator,bitbucket-inventory,bitbucket-decorator,gosec,njsscan,gitleaks,checkov,sonar'
+          plugin-list: 'github-inventory,github-decorator,bitbucket-inventory,bitbucket-decorator,gosec,njsscan,gitleaks,checkov,sonar'
+
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-inventory == 'true' }}
         uses: docker://docker.preprod.ecr/actions/assets-github-inventory:latest
@@ -106,12 +101,5 @@ jobs:
         run: /app/plugin-checkov -mode single
 
       - name: Complete execution plan
-        uses: docker://docker.preprod.ecr/actions/assets-plugin-chain-utils:latest
+        uses: cloudbees-io/asset-chain-utils-preprod/end-chain@v1
         id: process-outputs
-        with:
-          entrypoint: assets-plugin-chain-utils
-          args: process-outputs
-        env:
-          INPUT_CLOUDBEES_API_TOKEN: ${{ cloudbees.api.token }}
-          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
-          INPUT_RUN_ID: ${{ cloudbees.run_id }}
