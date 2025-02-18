@@ -37,7 +37,7 @@ jobs:
         #Note: Please do not revert back the tag to latest, hot fix branch for the demo
       - name: Trivy Scanner
         if: ${{ steps.plan.outputs.trivy == 'true' }}
-        uses: docker://docker.preprod.ecr/actions/assets-trivy-scanner:90ac7296abb2c0c877b3364b5ce21ccf50cb0353
+        uses: docker://docker.preprod.ecr/actions/assets-trivy-scanner:latest
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
@@ -68,7 +68,7 @@ jobs:
 
       - name: Grype Scanner
         if: ${{ steps.plan.outputs.grype == 'true' }}
-        uses: docker://docker.preprod.ecr/actions/assets-grype-scanner:24c5c03b4793488b64cfb076262f28b81727cdf6
+        uses: docker://docker.preprod.ecr/actions/assets-grype-scanner:latest
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
@@ -77,7 +77,7 @@ jobs:
         run: /app/plugin-grype-scanner -mode single
 
       - name: Complete execution plan
-        uses: docker://docker.preprod.ecr/actions/assets-plugin-chain-utils:9bf191656a40d7d9e8af5b8b3b013884f3ad2073
+        uses: docker://docker.preprod.ecr/actions/assets-plugin-chain-utils:612d29472d9b1f7518fbee76a616f627416f7047
         id: process-outputs
         with:
           entrypoint: assets-plugin-chain-utils
