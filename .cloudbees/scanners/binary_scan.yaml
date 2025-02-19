@@ -6,7 +6,7 @@ jobs:
   scan:
     steps:
       - name: Initiate execution plan
-        uses: docker://docker.preprod.ecr/actions/assets-plugin-chain-utils:latest
+        uses: docker://docker.preprod.ecr/actions/assets-plugin-chain-utils:5027673eb01bf99931a5a181bdc2cffbd985a908
         id: plan
         with:
           entrypoint: assets-plugin-chain-utils
