@@ -32,7 +32,7 @@ jobs:
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
           EXECUTION_ROLE: "DECORATOR"
-        uses: docker://docker.preprod.ecr/actions/assets-cbp-workflow-artifacts:498264154dfee68ac0b0536b0a90c4c8726b6873
+        uses: docker://docker.preprod.ecr/actions/assets-cbp-workflow-artifacts:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
         #Note: Please do not revert back the tag to latest, hot fix branch for the demo
       - name: Trivy Scanner
