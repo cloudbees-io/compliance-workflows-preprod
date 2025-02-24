@@ -2,12 +2,21 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name:  binary_scan
 
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+
 jobs:
   scan:
     steps:
       - name: Initiate execution plan
         uses: cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
+
+      - name: Setup git credentials
+        continue-on-error: true
+        uses: cloudbees-io/configure-git-global-credentials@v1
 
       - name: Login to AWS
         uses: cloudbees-io/configure-aws-credentials@v1
