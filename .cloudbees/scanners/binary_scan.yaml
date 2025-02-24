@@ -3,7 +3,7 @@ kind: workflow
 name:  binary_scan
 
 permissions:
-  id-token: read
+  id-token: write
 
 jobs:
   scan:
