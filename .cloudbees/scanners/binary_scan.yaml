@@ -2,6 +2,11 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name:  binary_scan
 
+permissions:
+  scm-token-own: read
+  scm-token-org: read
+  id-token: write
+
 jobs:
   scan:
     steps:
@@ -63,7 +68,7 @@ jobs:
           done < "resolved-image.file"
           
           set -e        
-        
+
       - name: Workflow Artifact Inventory
         if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
         env:
