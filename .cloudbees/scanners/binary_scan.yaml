@@ -2,9 +2,6 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name:  binary_scan
 
-permissions:
-  id-token: write
-
 jobs:
   scan:
     steps:
@@ -18,7 +15,7 @@ jobs:
         continue-on-error: true
         with:
           aws-region: us-east-1
-          role-to-assume: ${{ vars.oidc_staging_iam_role }}
+          role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
           role-duration-seconds: "3600"
 
       - name: Configure container registry for Staging ECR
