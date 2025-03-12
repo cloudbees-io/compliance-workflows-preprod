@@ -82,6 +82,7 @@ jobs:
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
+          FIELD_INPUT: "a47BRPb443693shXpcp0"
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
