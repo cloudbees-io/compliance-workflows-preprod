@@ -59,26 +59,25 @@ jobs:
           done < "resolved-image.file"
           
           set -e  
-
-      - name: Workflow Artifact Inventory
-        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
+      - name: Workflow Artifact Inventory (acr)
+        #        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
         continue-on-error: true
         env:
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
           EXECUTION_ROLE: "MASTER"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-aws-ecr:latest
-        run: /app/plugin-cbp-workflow-artifacts -mode single
+        uses: docker://docker.preprod.ecr/actions/assets-cbp-aws-ecr:latest
+        run: /app/plugin-cbp-aws-ecr -mode single
 
       - name: Workflow Artifact Inventory
-#        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
+        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
         env:
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
           INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
           EXECUTION_ROLE: "MASTER"
-        uses: docker://docker.preprod.ecr/actions/assets-cbp-aws-ecr:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
         run: /app/plugin-cbp-workflow-artifacts -mode single
 
       - name: Workflow Artifact Metadata
