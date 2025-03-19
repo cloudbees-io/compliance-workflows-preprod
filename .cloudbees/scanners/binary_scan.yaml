@@ -72,7 +72,7 @@ jobs:
         run: /app/plugin-cbp-workflow-artifacts -mode single
 
       - name: Workflow Artifact Inventory
-        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
+#        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
         env:
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
@@ -82,7 +82,7 @@ jobs:
         run: /app/plugin-cbp-workflow-artifacts -mode single
 
       - name: Workflow Artifact Metadata
-#        if: ${{ steps.plan.outputs.wfartifact-decorator == 'true' }}
+        if: ${{ steps.plan.outputs.wfartifact-decorator == 'true' }}
         env:
           INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
           INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
