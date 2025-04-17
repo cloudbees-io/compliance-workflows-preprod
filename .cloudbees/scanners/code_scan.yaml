@@ -8,7 +8,12 @@ jobs:
       - name: Initiate execution plan
         uses: cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
-
+      - name: Print execution plan output file
+        run: |
+          cat "${{ cloudbees.workspace }}/store/execution/execution.json"
+      - name: Print execution plan output file
+        run: |
+          cat "${{ cloudbees.workspace }}/store/request/request.json"
       - name: Login to AWS
         uses: cloudbees-io/configure-aws-credentials@v1
         id: aws-login
