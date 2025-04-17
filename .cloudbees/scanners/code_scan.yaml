@@ -4,6 +4,7 @@ name:  scan
 
 jobs:
   scan:
+    runs-on: ubuntu-latest
     steps:
       - name: Initiate execution plan
         uses: cloudbees-io/asset-chain-utils-preprod/start-chain@v1
