@@ -124,7 +124,7 @@ jobs:
 
       - name: Grype Scanner
         if: ${{ steps.plan.outputs.grype == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-grype-scanner:24c5c03b4793488b64cfb076262f28b81727cdf6
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-grype-scanner:latest
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
