@@ -93,6 +93,7 @@ jobs:
         run: /app/plugin-gitleaks-scanner -mode single
 
       - name: Sonar Scanner
+        if: ${{ steps.plan.outputs.sonar == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
         env:
           SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
