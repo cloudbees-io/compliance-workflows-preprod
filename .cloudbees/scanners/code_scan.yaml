@@ -24,7 +24,7 @@ jobs:
         
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-inventory == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:fdcc5aceb0adc0ea70cba5f3e5b94bfc0bc13750
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:0c61e45e18b4155246f1e0b1c6bf7275d96c3da9
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
           CH_LOG_LEVEL: trace
@@ -32,7 +32,7 @@ jobs:
 
       - name: Github Metadata
         if: ${{ steps.plan.outputs.github-decorator == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:fdcc5aceb0adc0ea70cba5f3e5b94bfc0bc13750
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:c725c4df53250b0833d1e2a0033e3274f290dfd7
         env:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
         run: /app/plugin-git-decorator -mode single
