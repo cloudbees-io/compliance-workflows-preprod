@@ -105,7 +105,7 @@ jobs:
         
       - name: BlackDuck Scanner
         if: ${{ cloudbees.scm.repository == 'cloudbees-compliance/demo-go-service' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:c0ce9450ac8555a9c5cfd32f76256dbd230a38da
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:be450f3f6c3bec06f5e28980b48e1f16dcc3f2f3
         env:
           BLACKDUCK_PROPS : ${{ steps.plan.outputs.blackduck-props}}
           RUN_ID: ${{ cloudbees.run_id }}
