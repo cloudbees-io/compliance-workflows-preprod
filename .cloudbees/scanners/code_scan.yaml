@@ -104,7 +104,7 @@ jobs:
         run: /app/plugin-sonarqube-scanner -mode single
         
       - name: BlackDuck Scanner
-        if: ${{ cloudbees.scm.repository == 'cloudbees-compliance/demo-go-service' }}
+        if: ${{ steps.plan.outputs.blackduck == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:83067f43b0e36faff0dc1edb44f3138d47fa2cc2
         env:
           BLACKDUCK_PROPS : ${{ steps.plan.outputs.blackduck-props}}
