@@ -9,18 +9,18 @@ jobs:
         uses: cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
 
-      - name: Login to AWS
-        uses: cloudbees-io/configure-aws-credentials@v1
-        id: aws-login
-        continue-on-error: true
-        with:
-          aws-region: us-east-1
-          role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
-          role-duration-seconds: "3600"
+      # - name: Login to AWS
+      #   uses: cloudbees-io/configure-aws-credentials@v1
+      #   id: aws-login
+      #   continue-on-error: true
+      #   with:
+      #     aws-region: us-east-1
+      #     role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
+      #     role-duration-seconds: "3600"
 
-      - name: Configure container registry for Staging ECR
-        continue-on-error: true
-        uses: cloudbees-io/configure-ecr-credentials@v1
+      # - name: Configure container registry for Staging ECR
+      #   continue-on-error: true
+      #   uses: cloudbees-io/configure-ecr-credentials@v1
         
       - name: Github Inventory
         if: ${{ steps.plan.outputs.github-inventory == 'true' }}
