@@ -138,7 +138,7 @@ jobs:
         if: ${{ steps.plan.outputs.coverity == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:cdce1dfd64434a9174bc4bda3b0b73f1224bd58b
         env:
-          BLACKDUCK_PROPS : ${{ steps.plan.outputs.blackduck-props}}
+          COVERITY_PROPS : ${{ steps.plan.outputs.coverity-props}}
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
