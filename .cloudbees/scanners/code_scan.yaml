@@ -125,7 +125,7 @@ jobs:
         
       - name: BlackDuck Scanner
         if: ${{ steps.plan.outputs.blackduck == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:39f4e7bfec60954de7e76a862aa1f5cdfecfbbdd
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:latest
         env:
           BLACKDUCK_PROPS : ${{ steps.plan.outputs.blackduck-props}}
           RUN_ID: ${{ cloudbees.run_id }}
@@ -133,6 +133,18 @@ jobs:
           STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-blackduck-scanner -mode single
+
+      - name: Coverity Polaris Scanner
+        if: ${{ steps.plan.outputs.coverity == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:cdce1dfd64434a9174bc4bda3b0b73f1224bd58b
+        env:
+          COVERITY_PROPS : ${{ steps.plan.outputs.coverity-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-coverity-scanner -mode single
+
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
