@@ -112,17 +112,6 @@ jobs:
         continue-on-error: true
         run: /app/plugin-gitleaks-scanner -mode single
 
-      - name: Sonar Scanner
-        if: ${{ steps.plan.outputs.sonar == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
-        env:
-          SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
-          RUN_ID: ${{ cloudbees.run_id }}
-          JOB_ID: ${{ job.id }}
-          STEP_ID: ${{ step.internal.id }}
-        continue-on-error: true
-        run: /app/plugin-sonarqube-scanner -mode single
-        
       - name: BlackDuck Scanner
         if: ${{ steps.plan.outputs.blackduck == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:latest
@@ -155,6 +144,19 @@ jobs:
           STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
         run: /app/plugin-checkov -mode single
+
+       # PLease do not move the position of sonarqube plugin in the list as it is creating permission issues for other plugin
+       # To be addressed on the ticket
+      - name: Sonar Scanner
+        if: ${{ steps.plan.outputs.sonar == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
+        env:
+          SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-sonarqube-scanner -mode single
 
       - name: Complete execution plan
         uses: cloudbees-io/asset-chain-utils-preprod/end-chain@v1
