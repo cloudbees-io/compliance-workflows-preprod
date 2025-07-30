@@ -125,7 +125,7 @@ jobs:
 
       - name: Coverity Polaris Scanner
         if: ${{ steps.plan.outputs.coverity == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:1a51b1b2a868d1b5993b94465e42bc0cc13a6853
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:78114f6d06083908e467c8e37b1c4154d35b9584
         env:
           COVERITY_PROPS : ${{ steps.plan.outputs.coverity-props}}
           RUN_ID: ${{ cloudbees.run_id }}
