@@ -10,7 +10,7 @@ jobs:
   scan:
     steps:
       - name: Initiate execution plan
-        uses: cloudbees-io/asset-chain-utils-preprod/start-chain@v1
+        uses: https://cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
 
       - name: Login to AWS
@@ -137,5 +137,5 @@ jobs:
         run: /app/plugin-grype-scanner -mode single
 
       - name: Complete execution plan
-        uses: cloudbees-io/asset-chain-utils-preprod/end-chain@v1
+        uses: https://cloudbees-io/asset-chain-utils-preprod/end-chain@v1
         id: process-outputs
