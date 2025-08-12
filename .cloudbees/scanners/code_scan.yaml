@@ -8,6 +8,7 @@ name:  scan
 
 jobs:
   scan:
+    runs-on: large
     steps:
       - name: Initiate execution plan
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
