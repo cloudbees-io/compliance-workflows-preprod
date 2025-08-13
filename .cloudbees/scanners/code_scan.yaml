@@ -133,6 +133,7 @@ jobs:
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
+        timeout-minutes: 30
         run: /app/plugin-coverity-polaris -mode single
 
 
