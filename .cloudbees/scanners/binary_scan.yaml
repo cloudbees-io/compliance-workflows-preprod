@@ -68,7 +68,7 @@ jobs:
         #        if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
         continue-on-error: true
         env:
-          TESTING_ASSET_IDENTIFIER: "020229604682.dkr.ecr.us-east-1.amazonaws.com/services/asset-service"
+          TESTING_ASSET_IDENTIFIER: "public.ecr.aws/l7o7z1g8/actions/assets-github-inventory"
           EXECUTION_ROLE: "MASTER"
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:6962b4d7fd66e6402d8a8f781cab980b8cd7ff6a
         run: /app/plugin-aws-ecr -mode single
@@ -77,7 +77,7 @@ jobs:
         #        if: ${{ steps.plan.outputs.ecr-metadata == 'true' }}
         continue-on-error: true
         env:
-          TESTING_ASSET_IDENTIFIER: "020229604682.dkr.ecr.us-east-1.amazonaws.com/services/asset-service"
+          TESTING_ASSET_IDENTIFIER: "public.ecr.aws/l7o7z1g8/actions/assets-github-inventory"
           INPUT_AWS_REGION: "us-east-1"
           INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
           EXECUTION_ROLE: "DECORATOR"
