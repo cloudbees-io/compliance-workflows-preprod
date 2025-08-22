@@ -75,7 +75,7 @@ jobs:
 
       - name: SCC Scanner
         if: ${{ steps.plan.outputs.scc == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:d1aaf42617ce6934bc8fff8d33736245504853a3
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:183f888b857032ed8b42dd06d2a4b7e3225bd06e
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
