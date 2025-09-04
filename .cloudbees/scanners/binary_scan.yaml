@@ -2,9 +2,9 @@ apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name:  binary_scan
 
-# permissions:
-#   scm-token-own: read
-#   id-token: write
+permissions:
+  scm-token-own: read
+  id-token: write
 
 jobs:
   scan:
@@ -64,25 +64,23 @@ jobs:
           
           set -e  
 
-      # - name: ECR Artifact Inventory
-      #   #        if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
-      #   continue-on-error: true
-      #   env:
-      #     TESTING_ASSET_IDENTIFIER: "020229604682.dkr.ecr.us-east-1.amazonaws.com/services/asset-service"
-      #     EXECUTION_ROLE: "MASTER"
-      #   uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:430e09e607ae61d8c250dce0cbbd46398ea156d5
-      #   run: /app/plugin-aws-ecr -mode single
+      - name: ECR Artifact Inventory
+        if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
+        continue-on-error: true
+        env:
+          EXECUTION_ROLE: "MASTER"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:430e09e607ae61d8c250dce0cbbd46398ea156d5
+        run: /app/plugin-aws-ecr -mode single
 
-      # - name: ECR Artifact Metadata
-      #   #        if: ${{ steps.plan.outputs.ecr-metadata == 'true' }}
-      #   continue-on-error: true
-      #   env:
-      #     TESTING_ASSET_IDENTIFIER: "020229604682.dkr.ecr.us-east-1.amazonaws.com/services/asset-service"
-      #     INPUT_AWS_REGION: "us-east-1"
-      #     INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
-      #     EXECUTION_ROLE: "DECORATOR"
-      #   uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:430e09e607ae61d8c250dce0cbbd46398ea156d5
-      #   run: /app/plugin-aws-ecr -mode single
+      - name: ECR Artifact Metadata
+        if: ${{ steps.plan.outputs.ecr-metadata == 'true' }}
+        continue-on-error: true
+        env:
+          INPUT_AWS_REGION: "us-east-1"
+          INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
+          EXECUTION_ROLE: "DECORATOR"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:430e09e607ae61d8c250dce0cbbd46398ea156d5
+        run: /app/plugin-aws-ecr -mode single
 
       - name: Workflow Artifact Inventory
         if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
