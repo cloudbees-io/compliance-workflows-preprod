@@ -66,7 +66,7 @@ jobs:
 
       - name: ECR Artifact Inventory
         if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
-        continue-on-error: true
+        #continue-on-error: true
         env:
           EXECUTION_ROLE: "MASTER"
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4cd73369daaae27c523200f37715f1d6ff97ccf8
@@ -74,7 +74,7 @@ jobs:
 
       - name: ECR Artifact Metadata
         if: ${{ steps.plan.outputs.ecr-metadata == 'true' }}
-        continue-on-error: true
+        #continue-on-error: true
         env:
           INPUT_AWS_REGION: "us-east-1"
           INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
