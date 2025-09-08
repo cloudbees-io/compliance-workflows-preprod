@@ -69,7 +69,7 @@ jobs:
         #continue-on-error: true
         env:
           EXECUTION_ROLE: "MASTER"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:cee91b90425ded249114891402836e2e33dcf753
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4bbe0ee0e409d45b1ec3472da47fc63fd18ec341
         run: /app/plugin-aws-ecr -mode single
 
       - name: ECR Artifact Metadata
@@ -79,7 +79,7 @@ jobs:
           INPUT_AWS_REGION: "us-east-1"
           INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
           EXECUTION_ROLE: "DECORATOR"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:cee91b90425ded249114891402836e2e33dcf753
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4bbe0ee0e409d45b1ec3472da47fc63fd18ec341
         run: /app/plugin-aws-ecr -mode single
 
       - name: Workflow Artifact Inventory
