@@ -13,63 +13,63 @@ jobs:
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
 
-      # - name: Login to AWS
-      #   uses: https://github.com/cloudbees-io/configure-aws-credentials@v1
-      #   id: aws-login
-      #   continue-on-error: true
-      #   with:
-      #     aws-region: us-east-1
-      #     role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
-      #     role-duration-seconds: "3600"
-
-      # - name: Configure container registry for Staging ECR
-      #   continue-on-error: true
-      #   uses: https://github.com/cloudbees-io/configure-ecr-credentials@v1
-
-      - id: cranepull
+      - name: Login to AWS
+        uses: https://github.com/cloudbees-io/configure-aws-credentials@v1
+        id: aws-login
         continue-on-error: true
-        name: crane pull
-        uses: docker://gcr.io/go-containerregistry/crane:debug
-        run: |
-          set -uo pipefail
-          
-          if [ ! -e resolved-image.file ]; then
-            echo '020229604682.dkr.ecr.us-east-1.amazonaws.com/services/asset-service:0.0.6170' > resolved-image.file
-          fi
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
+          role-duration-seconds: "3600"
 
-          set +e
+      - name: Configure container registry for Staging ECR
+        continue-on-error: true
+        uses: https://github.com/cloudbees-io/configure-ecr-credentials@v1
+
+      # - id: cranepull
+      #   continue-on-error: true
+      #   name: crane pull
+      #   uses: docker://gcr.io/go-containerregistry/crane:debug
+      #   run: |
+      #     set -uo pipefail
           
-          image_with_digest=
-          while IFS= read -r line; do
-            echo "Getting image digest of source image ${line}"
-            image_with_digest=$(crane digest ${line} --full-ref --platform all)
+      #     if [ ! -e resolved-image.file ]; then
+      #       echo '020229604682.dkr.ecr.us-east-1.amazonaws.com/services/asset-service:0.0.6170' > resolved-image.file
+      #     fi
+
+      #     set +e
           
-            if [ $? -ne 0 ]; then
-              echo "Failed get image digest: $line"
-              image_with_digest=
-              continue
-            fi
+      #     image_with_digest=
+      #     while IFS= read -r line; do
+      #       echo "Getting image digest of source image ${line}"
+      #       image_with_digest=$(crane digest ${line} --full-ref --platform all)
           
-            echo "Found source image to pull: ${image_with_digest}"
-            crane pull ${image_with_digest} image.tar.gz
-            ls -alt
+      #       if [ $? -ne 0 ]; then
+      #         echo "Failed get image digest: $line"
+      #         image_with_digest=
+      #         continue
+      #       fi
           
-            if [ $? -ne 0 ]; then
-              echo "Failed to pull image: $line"
-              image_with_digest=
-              continue
-            fi
-            break
-          done < "resolved-image.file"
+      #       echo "Found source image to pull: ${image_with_digest}"
+      #       crane pull ${image_with_digest} image.tar.gz
+      #       ls -alt
           
-          set -e  
+      #       if [ $? -ne 0 ]; then
+      #         echo "Failed to pull image: $line"
+      #         image_with_digest=
+      #         continue
+      #       fi
+      #       break
+      #     done < "resolved-image.file"
+          
+      #     set -e  
 
       - name: ECR Artifact Inventory
         if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
         #continue-on-error: true
         env:
           EXECUTION_ROLE: "MASTER"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4bbe0ee0e409d45b1ec3472da47fc63fd18ec341
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4cd73369daaae27c523200f37715f1d6ff97ccf8
         run: /app/plugin-aws-ecr -mode single
 
       - name: ECR Artifact Metadata
@@ -79,7 +79,7 @@ jobs:
           INPUT_AWS_REGION: "us-east-1"
           INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
           EXECUTION_ROLE: "DECORATOR"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4bbe0ee0e409d45b1ec3472da47fc63fd18ec341
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4cd73369daaae27c523200f37715f1d6ff97ccf8
         run: /app/plugin-aws-ecr -mode single
 
       - name: Workflow Artifact Inventory
