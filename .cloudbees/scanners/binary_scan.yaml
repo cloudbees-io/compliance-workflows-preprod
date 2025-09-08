@@ -13,9 +13,9 @@ jobs:
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
 
-      # Login to AWS if ECR metadata is enabled as ECR metadata needs AWS credentials
+      # Login to AWS if region and role arn are provided to pull private images from ECR
       - name: Login to AWS
-        if: ${{ steps.plan.outputs.ecr-metadata == 'true' }}
+        if: ${{ steps.plan.outputs.ecr_region_name != 'false' && steps.plan.outputs.ecr_role_arn != 'false' }}
         uses: https://github.com/cloudbees-io/configure-aws-credentials@v1
         id: aws-login
         with:
