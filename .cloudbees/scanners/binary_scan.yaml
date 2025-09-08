@@ -27,7 +27,7 @@ jobs:
         if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
         env:
           EXECUTION_ROLE: "MASTER"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:eb9bdd526998718673f54e0ac9124b7394e81b10
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:6e1040bb52c14c51f58e81588ac13d0f88645c08
         run: /app/plugin-aws-ecr -mode single
 
       - name: ECR Artifact Metadata
@@ -35,7 +35,7 @@ jobs:
         env:
           INPUT_AWS_REGION: ${{ steps.plan.outputs.ecr_region_name }}
           EXECUTION_ROLE: "DECORATOR"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:eb9bdd526998718673f54e0ac9124b7394e81b10
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:6e1040bb52c14c51f58e81588ac13d0f88645c08
         run: /app/plugin-aws-ecr -mode single
 
       - name: Workflow Artifact Inventory
