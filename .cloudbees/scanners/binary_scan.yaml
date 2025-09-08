@@ -13,18 +13,18 @@ jobs:
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
         id: plan
 
-      - name: Login to AWS
-        uses: https://github.com/cloudbees-io/configure-aws-credentials@v1
-        id: aws-login
-        continue-on-error: true
-        with:
-          aws-region: us-east-1
-          role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
-          role-duration-seconds: "3600"
+      # - name: Login to AWS
+      #   uses: https://github.com/cloudbees-io/configure-aws-credentials@v1
+      #   id: aws-login
+      #   continue-on-error: true
+      #   with:
+      #     aws-region: us-east-1
+      #     role-to-assume: arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt
+      #     role-duration-seconds: "3600"
 
-      - name: Configure container registry for Staging ECR
-        continue-on-error: true
-        uses: https://github.com/cloudbees-io/configure-ecr-credentials@v1
+      # - name: Configure container registry for Staging ECR
+      #   continue-on-error: true
+      #   uses: https://github.com/cloudbees-io/configure-ecr-credentials@v1
 
       - id: cranepull
         continue-on-error: true
@@ -69,7 +69,7 @@ jobs:
         #continue-on-error: true
         env:
           EXECUTION_ROLE: "MASTER"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4cd73369daaae27c523200f37715f1d6ff97ccf8
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:cee91b90425ded249114891402836e2e33dcf753
         run: /app/plugin-aws-ecr -mode single
 
       - name: ECR Artifact Metadata
@@ -79,7 +79,7 @@ jobs:
           INPUT_AWS_REGION: "us-east-1"
           INPUT_ROLE_TO_ASSUME: "arn:aws:iam::020229604682:role/preprod-cloudbees-infra-mgmt" 
           EXECUTION_ROLE: "DECORATOR"
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:4cd73369daaae27c523200f37715f1d6ff97ccf8
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:cee91b90425ded249114891402836e2e33dcf753
         run: /app/plugin-aws-ecr -mode single
 
       - name: Workflow Artifact Inventory
