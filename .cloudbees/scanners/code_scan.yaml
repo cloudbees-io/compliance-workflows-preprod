@@ -73,22 +73,6 @@ jobs:
           EXECUTION_ROLE: "DECORATOR"
         run: /app/plugin-gerrit -mode single
 
-      - name: GitLab Inventory
-        if: ${{ steps.plan.outputs.gitlab-inventory == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitlab:latest
-        env:
-          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
-          EXECUTION_ROLE: "MASTER"
-        run: /app/plugin-gitlab -mode single
-
-      - name: GitLab Metadata
-        if: ${{ steps.plan.outputs.gitlab-decorator == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitlab:latest
-        env:
-          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
-          EXECUTION_ROLE: "DECORATOR"
-        run: /app/plugin-gitlab -mode single
-
       - name: SCC Scanner
         if: ${{ steps.plan.outputs.scc == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:bcc4defb45d5df7003d4af382196475f30e9f4da
