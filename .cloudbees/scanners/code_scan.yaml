@@ -167,7 +167,7 @@ jobs:
         if: ${{ steps.plan.outputs.klocwork == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-klocwork-scanner:latest
         env:
-          BLACKDUCK_PROPS: ${{ steps.plan.outputs.klocwork-props}}
+          KLOCWORK_PROPS: ${{ steps.plan.outputs.klocwork-props}}
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
