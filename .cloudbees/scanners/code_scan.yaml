@@ -165,7 +165,7 @@ jobs:
 
       - name: Klocwork Scanner
         if: ${{ steps.plan.outputs.klocwork == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-klocwork-scanner:18123d22bf8bee627ebeba3197aaa497e6e1dd0c
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-klocwork-scanner:dd6145fc749c1ccb9f61bff10d034387433ccf89
         env:
           KLOCWORK_PROPS: ${{ steps.plan.outputs.klocwork-props}}
           RUN_ID: ${{ cloudbees.run_id }}
