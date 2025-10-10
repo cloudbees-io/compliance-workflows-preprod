@@ -175,10 +175,10 @@ jobs:
         run: /app/plugin-klocwork-scanner -mode single
 
       - name: Snyk SAST Scanner
-        if: ${{ steps.plan.outputs.snyk-sast == 'true' }}
+        if: ${{ steps.plan.outputs.snykcode == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-snyk-sast-scanner:latest
         env:
-          SNYK_SAST_PROPS: ${{ steps.plan.outputs.snyk-sast-props}}
+          SNYK_SAST_PROPS: ${{ steps.plan.outputs.snykcode-props}}
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
