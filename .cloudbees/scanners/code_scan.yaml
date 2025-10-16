@@ -154,7 +154,7 @@ jobs:
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:c0b2998d8080c0dfd91a5118925267db48b1e6a7
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:0af3a0c761b82076938bd7a4cb2780dfb1004ca9
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
