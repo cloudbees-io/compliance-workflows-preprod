@@ -9,9 +9,9 @@ permissions:
 jobs:
   scan:
     steps:
-      # - name: Initiate execution plan
-      #   uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
-      #   id: plan
+      - name: Initiate execution plan
+        uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
+        id: plan
 
       # Login to AWS if region and role arn are provided to pull private images from ECR
       - name: Login to AWS
