@@ -173,7 +173,7 @@ jobs:
         continue-on-error: true
         run: /app/plugin-snyk-sast-scanner -mode single
 
-      - name: Snyk IAC Scanner
+      - name: Snyk IaC Scanner
         if: ${{ steps.plan.outputs.snyk-iac == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-snyk-iac-scanner:latest
         env:
