@@ -184,6 +184,17 @@ jobs:
         continue-on-error: true
         run: /app/plugin-snyk-iac-scanner -mode single
 
+      - name: Snyk SCA Scanner
+        if: ${{ steps.plan.outputs.snyksca == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-snyk-sca-scanner:latest
+        env:
+          SNYK_SCA_PROPS: ${{ steps.plan.outputs.snyksca-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-snyk-sca-scanner -mode single
+
       - name: Perforce Klocwork Scanner
         if: ${{ steps.plan.outputs.perforce-klocwork-sast == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-klocwork-scanner:latest
