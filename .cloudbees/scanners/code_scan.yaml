@@ -109,7 +109,7 @@ jobs:
 
       - name: Njs Scanner
         if: ${{ steps.plan.outputs.njsscan == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:b7c54ae8474f95951413524aed5f9f2dc7e3fd8e
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
