@@ -33,7 +33,6 @@ jobs:
           ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
           CH_LOG_LEVEL: trace
         run: /app/plugin-git-master -mode single
-      // Testing a fix please do not change
       - name: Github Metadata
         if: ${{ steps.plan.outputs.github-decorator == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:3bfcdd30f4dcb8eb017ce2f371890f91b1c42d4c
