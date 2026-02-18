@@ -62,7 +62,7 @@ jobs:
       - name: JFrog Artifactory Inventory
         if: ${{ steps.plan.outputs.jfrog-inventory == 'true' }}
         env:
-          INPUT_JFROG_TOKEN: ${{ steps.plan.outputs.jfrog_token }}
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
           EXECUTION_ROLE: "MASTER"
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-jfrog-artifactory:latest
         run: /app/plugin-jfrog -mode single
@@ -70,7 +70,7 @@ jobs:
       - name: JFrog Artifactory Metadata
         if: ${{ steps.plan.outputs.jfrog-metadata == 'true' }}
         env:
-          INPUT_JFROG_TOKEN: ${{ steps.plan.outputs.jfrog_token }}
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
           EXECUTION_ROLE: "DECORATOR"
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-jfrog-artifactory:latest
         run: /app/plugin-jfrog -mode single
