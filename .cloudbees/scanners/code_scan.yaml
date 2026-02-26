@@ -90,7 +90,7 @@ jobs:
 
       - name: SCC Scanner
         if: ${{ steps.plan.outputs.scc == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:bcc4defb45d5df7003d4af382196475f30e9f4da
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:latest
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
@@ -140,7 +140,7 @@ jobs:
 
       - name: Coverity Polaris Scanner
         if: ${{ steps.plan.outputs.coverity == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:5e56777a32279366f7ebcf5b06abdfc0172f44c5
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:latest
         env:
           COVERITY_PROPS : ${{ steps.plan.outputs.coverity-props}}
           RUN_ID: ${{ cloudbees.run_id }}
@@ -153,7 +153,7 @@ jobs:
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:0af3a0c761b82076938bd7a4cb2780dfb1004ca9
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:latest
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
