@@ -194,6 +194,17 @@ jobs:
         continue-on-error: true
         run: /app/plugin-snyk-sca-scanner -mode single
 
+      - name: Checkmarxone SAST Scanner
+        if: ${{ steps.plan.outputs.checkmarxone-sast == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkmarxone-sast-scanner:latest
+        env:
+          CHECKMARXONE_SAST_PROPS: ${{ steps.plan.outputs.checkmarxone-sast-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/checkmarxone-sast-scanner -mode single        
+
       - name: Perforce Klocwork Scanner
         if: ${{ steps.plan.outputs.perforce-klocwork-sast == 'true' }}
         uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-klocwork-scanner:latest
