@@ -203,7 +203,7 @@ jobs:
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
         continue-on-error: true
-        run: /app/checkmarxone-sast-scanner -mode single        
+        run: /app/plugin-checkmarxone-sast-scanner -mode single        
 
       - name: Perforce Klocwork Scanner
         if: ${{ steps.plan.outputs.perforce-klocwork-sast == 'true' }}
