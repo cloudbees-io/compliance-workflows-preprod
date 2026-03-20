@@ -99,7 +99,7 @@ jobs:
 
       - name: GoSec Scanner
         if: ${{ steps.plan.outputs.gosec == 'true' }}
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gosec-scanner:936eb173cd6b9f48da2c6afc155c0bfa2fc200cf
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gosec-scanner:1e3539430064084015194cd5fe8a4d25227a61d9
         env:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
