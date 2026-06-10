@@ -1,0 +1,137 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name:  binary_scan
+
+permissions:
+  scm-token-own: read
+  id-token: write
+
+jobs:
+  scan:
+    runs-on: [self-hosted]
+    steps:
+      - name: Initiate execution plan
+        uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
+        id: plan
+
+      # Login to AWS if region and role arn are provided to pull private images from ECR
+      - name: Login to AWS
+        if: ${{ steps.plan.outputs.ecr_region_name != 'false' && steps.plan.outputs.ecr_role_arn != 'false' }}
+        uses: https://github.com/cloudbees-io/configure-aws-credentials@v1
+        id: aws-login
+        with:
+          aws-region: ${{ steps.plan.outputs.ecr_region_name }}
+          role-to-assume: ${{ steps.plan.outputs.ecr_role_arn }}
+          role-duration-seconds: "3600"
+
+      - name: ECR Artifact Inventory
+        if: ${{ steps.plan.outputs.ecr-inventory == 'true' }}
+        env:
+          INPUT_AWS_REGION: ${{ steps.plan.outputs.ecr_region_name }}
+          EXECUTION_ROLE: "MASTER"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:latest
+        run: /app/plugin-aws-ecr -mode single
+
+      - name: ECR Artifact Metadata
+        if: ${{ steps.plan.outputs.ecr-metadata == 'true' }}
+        env:
+          INPUT_AWS_REGION: ${{ steps.plan.outputs.ecr_region_name }}
+          EXECUTION_ROLE: "DECORATOR"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-aws-ecr:latest
+        run: /app/plugin-aws-ecr -mode single
+
+      - name: Workflow Artifact Inventory
+        if: ${{ steps.plan.outputs.wfartifact-inventory == 'true' }}
+        env:
+          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
+          INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
+          INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
+          EXECUTION_ROLE: "MASTER"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
+        run: /app/plugin-cbp-workflow-artifacts -mode single
+
+      - name: Workflow Artifact Metadata
+        if: ${{ steps.plan.outputs.wfartifact-decorator == 'true' }}
+        env:
+          INPUT_CLOUDBEES_API_URL: ${{ cloudbees.api.url }}
+          INPUT_WF_ARTIFACT_TOKEN: ${{ steps.plan.outputs.wf_artifact_token }}
+          INPUT_COMPONENT_ID: ${{ steps.plan.outputs.wf_artifact_component_id }}
+          EXECUTION_ROLE: "DECORATOR"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-cbp-workflow-artifacts:latest
+        run: /app/plugin-cbp-workflow-artifacts -mode single
+
+      - name: JFrog Artifactory Inventory
+        if: ${{ steps.plan.outputs.jfrog-inventory == 'true' }}
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "MASTER"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-jfrog-artifactory:latest
+        run: /app/plugin-jfrog -mode single
+
+      - name: JFrog Artifactory Metadata
+        if: ${{ steps.plan.outputs.jfrog-metadata == 'true' }}
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "DECORATOR"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-jfrog-artifactory:latest
+        run: /app/plugin-jfrog -mode single
+
+      - name: Nexus Repository Inventory
+        if: ${{ steps.plan.outputs.nexus-inventory == 'true' }}
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "MASTER"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-nexus-repository:latest
+        run: /app/plugin-nexus -mode single
+
+      - name: Nexus Repository Metadata
+        if: ${{ steps.plan.outputs.nexus-metadata == 'true' }}
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "DECORATOR"
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-nexus-repository:latest
+        run: /app/plugin-nexus -mode single
+
+      - name: Trivy Scanner
+        if: ${{ steps.plan.outputs.trivy == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-trivy-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-trivy-scanner -mode single
+
+      - name: FindSecBugs Scanner
+        if: ${{ steps.plan.outputs.findsecbugs == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-findsecbugs-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-findsecbugs -mode single
+
+      - name: Syft SBOM analyser
+        if: ${{ steps.plan.outputs.syft == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-syft-sbom:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-syftbom-analyser -mode single
+
+      - name: Grype Scanner
+        if: ${{ steps.plan.outputs.grype == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-grype-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-grype-scanner -mode single
+
+      - name: Complete execution plan
+        uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/end-chain@v1
+        id: process-outputs

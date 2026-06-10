@@ -1,0 +1,223 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name:  scan
+
+#permissions:
+#  scm-token-own: read
+#  id-token: write
+
+jobs:
+  scan:
+    runs-on: [self-hosted]
+    steps:
+      - name: Initiate execution plan
+        uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
+        id: plan
+
+      - name: Github Inventory
+        if: ${{ steps.plan.outputs.github-inventory == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-inventory:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          CH_LOG_LEVEL: trace
+        run: /app/plugin-git-master -mode single
+      - name: Github Metadata
+        if: ${{ steps.plan.outputs.github-decorator == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-github-metadata:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+        run: /app/plugin-git-decorator -mode single
+
+      - name: Bitbucket Inventory
+        if: ${{ steps.plan.outputs.bitbucket-inventory == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "MASTER"
+        run: /app/plugin-bitbucket -mode single
+
+      - name: Bitbucket Metadata
+        if: ${{ steps.plan.outputs.bitbucket-decorator == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-bitbucket-server:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "DECORATOR"
+        run: /app/plugin-bitbucket -mode single
+
+      - name: Gerrit Inventory
+        if: ${{ steps.plan.outputs.gerrit-inventory == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gerrit:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "MASTER"
+        run: /app/plugin-gerrit -mode single
+
+      - name: Gerrit Metadata
+        if: ${{ steps.plan.outputs.gerrit-decorator == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gerrit:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "DECORATOR"
+        run: /app/plugin-gerrit -mode single
+
+      - name: GitLab Inventory
+        if: ${{ steps.plan.outputs.gitlab-inventory == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitlab:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "MASTER"
+        run: /app/plugin-gitlab -mode single
+
+      - name: GitLab Metadata
+        if: ${{ steps.plan.outputs.gitlab-decorator == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitlab:latest
+        env:
+          ACCOUNT_CREDENTIALS: ${{ steps.plan.outputs.account_credentials}}
+          EXECUTION_ROLE: "DECORATOR"
+        run: /app/plugin-gitlab -mode single
+
+      - name: SCC Scanner
+        if: ${{ steps.plan.outputs.scc == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        run: /app/plugin-scc-scanner -mode single
+
+      - name: GoSec Scanner
+        if: ${{ steps.plan.outputs.gosec == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gosec-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+          GOSEC_FORCE_SCAN: true
+          GOSEC_AST_BUDGET_RATIO: 0.9
+        continue-on-error: true
+        run: /app/plugin-gosec-scanner -mode single
+
+      - name: Njs Scanner
+        if: ${{ steps.plan.outputs.njsscan == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-njsscan-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-njsscan-scanner -mode single
+
+      - name: Gitleaks Scanner
+        if: ${{ steps.plan.outputs.gitleaks == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-gitleaks-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-gitleaks-scanner -mode single
+
+      - name: BlackDuck Scanner
+        if: ${{ steps.plan.outputs.blackduck == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-blackduck-sca:latest
+        env:
+          BLACKDUCK_PROPS : ${{ steps.plan.outputs.blackduck-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-blackduck-scanner -mode single
+
+      - name: Coverity Polaris Scanner
+        if: ${{ steps.plan.outputs.coverity == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/plugin-coverity-sca:latest
+        env:
+          COVERITY_PROPS : ${{ steps.plan.outputs.coverity-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        timeout-minutes: 30
+        run: /app/plugin-coverity-polaris -mode single
+
+      - name: Checkov Scanner
+        if: ${{ steps.plan.outputs.checkov == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkov-scanner:latest
+        env:
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-checkov -mode single
+
+      - name: Snyk SAST Scanner
+        if: ${{ steps.plan.outputs.snykcode == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-snyk-sast-scanner:latest
+        env:
+          SNYK_SAST_PROPS: ${{ steps.plan.outputs.snykcode-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-snyk-sast-scanner -mode single
+
+      - name: Snyk IaC Scanner
+        if: ${{ steps.plan.outputs.snyk-iac == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-snyk-iac-scanner:latest
+        env:
+          SNYK_IAC_PROPS: ${{ steps.plan.outputs.snyk-iac-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-snyk-iac-scanner -mode single
+
+      - name: Snyk SCA Scanner
+        if: ${{ steps.plan.outputs.snyksca == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-snyk-sca-scanner:latest
+        env:
+          SNYK_SCA_PROPS: ${{ steps.plan.outputs.snyksca-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-snyk-sca-scanner -mode single
+
+      - name: Checkmarxone SAST Scanner
+        if: ${{ steps.plan.outputs.checkmarxone-sast == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-checkmarxone-sast-scanner:latest
+        env:
+          CHECKMARXONE_SAST_PROPS: ${{ steps.plan.outputs.checkmarxone-sast-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-checkmarxone-sast-scanner -mode single
+
+      - name: Perforce Klocwork Scanner
+        if: ${{ steps.plan.outputs.perforce-klocwork-sast == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-klocwork-scanner:latest
+        env:
+          KLOCWORK_PROPS: ${{ steps.plan.outputs.perforce-klocwork-sast-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-klocwork-scanner -mode single
+
+       # PLease do not move the position of sonarqube plugin in the list as it is creating permission issues for other plugin
+       # To be addressed on the ticket
+      - name: Sonar Scanner
+        if: ${{ steps.plan.outputs.sonar == 'true' }}
+        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-sonarqube-scanner:latest
+        env:
+          SONARQUBE_PROPS : ${{ steps.plan.outputs.sonar-props}}
+          RUN_ID: ${{ cloudbees.run_id }}
+          JOB_ID: ${{ job.id }}
+          STEP_ID: ${{ step.internal.id }}
+        continue-on-error: true
+        run: /app/plugin-sonarqube-scanner -mode single
+
+      - name: Complete execution plan
+        uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/end-chain@v1
+        id: process-outputs
