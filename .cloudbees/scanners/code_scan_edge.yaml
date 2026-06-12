@@ -9,6 +9,12 @@ name:  scan
 jobs:
   scan:
     runs-on: [self-hosted]
+    # Marks this as an edge-routed scan so start-chain's configure step fetches the
+    # execution plan over the public /v1 route. Edge runners call from outside the
+    # cluster, where the /reserved/* path is rejected with a 403 by the ALB source-IP
+    # condition. Cloud scans (code_scan.yaml) omit this and keep using /reserved/v1.
+    env:
+      EDGE_SCAN_RUN: "true"
     steps:
       - name: Initiate execution plan
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/start-chain@v1
