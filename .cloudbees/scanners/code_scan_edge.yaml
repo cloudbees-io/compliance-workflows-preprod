@@ -236,20 +236,6 @@ jobs:
         continue-on-error: true
         run: /app/plugin-sonarqube-scanner -mode single
 
-      # Edge-only workaround: the per-job workspace volume is
-      # group-owned (fs_group) with sgid, but non-root step containers are not added
-      # to that group, so they can read the shared store tree but cannot create new
-      # entries in it. Earlier scanner steps run as root and write fine; end-chain
-      # (assets-plugin-chain-utils) runs non-root and fails on
-      # `mkdir store/<run_id>/output: permission denied`. Make the store tree
-      # world-writable right before end-chain so process-outputs can persist output.
-      # Cloud (code_scan.yaml) shares a single pod volume with consistent ownership
-      # and does not need this. Proper fix should be in edge-runner (add fs_group to
-      # each step container's supplemental groups).
-      - name: Fix workspace store permissions for end-chain
-        uses: docker://alpine:3.24
-        run: chmod -R a+rwX "${CLOUDBEES_WORKSPACE:-/cloudbees/workspace}/store" || true
-
       - name: Complete execution plan
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/end-chain@v1
         id: process-outputs
