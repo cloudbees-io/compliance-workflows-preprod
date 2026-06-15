@@ -239,3 +239,5 @@ jobs:
       - name: Complete execution plan
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/end-chain@v1
         id: process-outputs
+        with:
+          edge-redaction-strip-basedata: ${{ steps.plan.outputs.EDGE_REDACTION_STRIP_BASEDATA }}
