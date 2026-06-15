@@ -89,6 +89,9 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          # Edge redaction (CBP-46173): suppress this code scanner's logs (can quote
+          # source). Code/SAST steps only; index+default so an unset var → "false".
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         run: /app/plugin-scc-scanner -mode single
 
       - name: GoSec Scanner
@@ -100,6 +103,7 @@ jobs:
           STEP_ID: ${{ step.internal.id }}
           GOSEC_FORCE_SCAN: true
           GOSEC_AST_BUDGET_RATIO: 0.9
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-gosec-scanner -mode single
 
@@ -110,6 +114,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
 
@@ -120,6 +125,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-gitleaks-scanner -mode single
 
@@ -153,6 +159,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-checkov -mode single
 
@@ -164,6 +171,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-snyk-sast-scanner -mode single
 
@@ -175,6 +183,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-snyk-iac-scanner -mode single
 
@@ -197,6 +206,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-checkmarxone-sast-scanner -mode single
 
@@ -208,6 +218,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-klocwork-scanner -mode single
 
@@ -221,6 +232,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
         continue-on-error: true
         run: /app/plugin-sonarqube-scanner -mode single
 
