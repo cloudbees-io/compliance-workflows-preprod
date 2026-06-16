@@ -90,8 +90,10 @@ jobs:
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
           # Edge redaction (CBP-46173): suppress this code scanner's logs (can quote
-          # source). Code/SAST steps only; index+default so an unset var → "false".
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          # source). Reads the value asset-service puts on the execution plan, surfaced
+          # by start-chain as a plan output (same channel as EDGE_REDACTION_STRIP_BASEDATA).
+          # Code/SAST steps only; default to "false" when absent.
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         run: /app/plugin-scc-scanner -mode single
 
       - name: GoSec Scanner
@@ -103,7 +105,7 @@ jobs:
           STEP_ID: ${{ step.internal.id }}
           GOSEC_FORCE_SCAN: true
           GOSEC_AST_BUDGET_RATIO: 0.9
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-gosec-scanner -mode single
 
@@ -114,7 +116,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-njsscan-scanner -mode single
 
@@ -125,7 +127,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-gitleaks-scanner -mode single
 
@@ -159,7 +161,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-checkov -mode single
 
@@ -171,7 +173,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-snyk-sast-scanner -mode single
 
@@ -183,7 +185,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-snyk-iac-scanner -mode single
 
@@ -206,7 +208,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-checkmarxone-sast-scanner -mode single
 
@@ -218,7 +220,7 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
         continue-on-error: true
         run: /app/plugin-klocwork-scanner -mode single
 
@@ -232,7 +234,7 @@ jobs:
       #     RUN_ID: ${{ cloudbees.run_id }}
       #     JOB_ID: ${{ job.id }}
       #     STEP_ID: ${{ step.internal.id }}
-      #     CLOUDBEES_SUPPRESS_LOGS: ${{ vars['edgeRedactionSuppressCodeScannerLogs'] || 'false' }}
+      #     CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS || 'false' }}
       #   continue-on-error: true
       #   run: /app/plugin-sonarqube-scanner -mode single
 
