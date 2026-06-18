@@ -245,3 +245,4 @@ jobs:
         id: process-outputs
         with:
           edge-redaction-strip-basedata: ${{ steps.plan.outputs.EDGE_REDACTION_STRIP_BASEDATA }}
+          edge-redaction-sweep-sarif: ${{ steps.plan.outputs.EDGE_REDACTION_SWEEP_SARIF }}
