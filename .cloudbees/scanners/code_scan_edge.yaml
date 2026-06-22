@@ -240,19 +240,6 @@ jobs:
         continue-on-error: true
         run: /app/plugin-sonarqube-scanner -mode single
 
-      # TEMPORARY (CBP-46177 E2E test): inject a SARIF with source snippets into the
-      # workspace so end-chain's sweep has something to sanitize (no scanner writes
-      # .sarif today). REVERT after verifying "sanitized 1 SARIF file(s)".
-      - name: Inject test SARIF
-        uses: docker://020229604682.dkr.ecr.us-east-1.amazonaws.com/actions/assets-scc-scanner:latest
-        shell: sh
-        run: |
-          cat > "$CLOUDBEES_WORKSPACE/cbp46177-injected.sarif" <<'EOF'
-          {"version":"2.1.0","runs":[{"results":[{"ruleId":"SQLInjection","locations":[{"physicalLocation":{"artifactLocation":{"uri":"dao/User.java"},"region":{"startLine":10,"snippet":{"text":"stmt.execute(secretSql)"}}}}],"codeFlows":[{"threadFlows":[{"locations":[{"location":{"physicalLocation":{"artifactLocation":{"uri":"dao/User.java"},"region":{"startLine":9,"snippet":{"text":"String secretSql = req.get(\"q\")"}}}}}]}]}]}]}]}
-          EOF
-          echo "injected SARIF at $CLOUDBEES_WORKSPACE/cbp46177-injected.sarif"
-          cat "$CLOUDBEES_WORKSPACE/cbp46177-injected.sarif"
-
       - name: Complete execution plan
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/end-chain@v1
         id: process-outputs
