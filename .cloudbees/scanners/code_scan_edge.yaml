@@ -246,3 +246,4 @@ jobs:
         with:
           edge-redaction-strip-basedata: ${{ steps.plan.outputs.EDGE_REDACTION_STRIP_BASEDATA }}
           edge-redaction-sweep-sarif: ${{ steps.plan.outputs.EDGE_REDACTION_SWEEP_SARIF }}
+          edge-redaction-suppress-code-scanner-logs: ${{ steps.plan.outputs.EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS }}
