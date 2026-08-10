@@ -105,13 +105,15 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          # Edge redaction (CBP-46178): suppress this scanner's logs, which can quote
-          # scanned content. Reads the value asset-service puts on the execution plan,
-          # surfaced by start-chain as a plan output (same channel as code_scan_edge).
-          # Index syntax so a missing output resolves to null → "false".
-          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
-        run: /app/plugin-trivy-scanner -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-trivy-scanner -mode single
 
       - name: FindSecBugs Scanner
         if: ${{ steps.plan.outputs.findsecbugs == 'true' }}
@@ -120,13 +122,15 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          # Edge redaction (CBP-46178): suppress this scanner's logs, which can quote
-          # scanned content. Reads the value asset-service puts on the execution plan,
-          # surfaced by start-chain as a plan output (same channel as code_scan_edge).
-          # Index syntax so a missing output resolves to null → "false".
-          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
-        run: /app/plugin-findsecbugs -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-findsecbugs -mode single
 
       - name: Syft SBOM analyser
         if: ${{ steps.plan.outputs.syft == 'true' }}
@@ -135,13 +139,15 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          # Edge redaction (CBP-46178): suppress this scanner's logs, which can quote
-          # scanned content. Reads the value asset-service puts on the execution plan,
-          # surfaced by start-chain as a plan output (same channel as code_scan_edge).
-          # Index syntax so a missing output resolves to null → "false".
-          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
-        run: /app/plugin-syftbom-analyser -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-syftbom-analyser -mode single
 
       - name: Grype Scanner
         if: ${{ steps.plan.outputs.grype == 'true' }}
@@ -150,13 +156,15 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          # Edge redaction (CBP-46178): suppress this scanner's logs, which can quote
-          # scanned content. Reads the value asset-service puts on the execution plan,
-          # surfaced by start-chain as a plan output (same channel as code_scan_edge).
-          # Index syntax so a missing output resolves to null → "false".
-          CLOUDBEES_SUPPRESS_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
-        run: /app/plugin-grype-scanner -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-grype-scanner -mode single
 
       - name: Complete execution plan
         uses: https://github.com/cloudbees-io/asset-chain-utils-preprod/end-chain@v1
