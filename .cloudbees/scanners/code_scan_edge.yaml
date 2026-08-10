@@ -89,10 +89,10 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -107,11 +107,11 @@ jobs:
           STEP_ID: ${{ step.internal.id }}
           GOSEC_FORCE_SCAN: true
           GOSEC_AST_BUDGET_RATIO: 0.9
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -124,11 +124,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -141,11 +141,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -159,8 +159,15 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
-        run: /app/plugin-blackduck-scanner -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-blackduck-scanner -mode single
 
       - name: Coverity Polaris Scanner
         if: ${{ steps.plan.outputs.coverity == 'true' }}
@@ -170,9 +177,16 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         timeout-minutes: 30
-        run: /app/plugin-coverity-polaris -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-coverity-polaris -mode single
 
       - name: Checkov Scanner
         if: ${{ steps.plan.outputs.checkov == 'true' }}
@@ -181,11 +195,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -199,11 +213,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -217,11 +231,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -235,8 +249,15 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
-        run: /app/plugin-snyk-sca-scanner -mode single
+        run: |
+          # Suppress this step's stdout/stderr unless redaction is explicitly off.
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
+            echo "Logs retained on-premises as per data residency policy"
+            exec >/dev/null 2>&1
+          fi
+          /app/plugin-snyk-sca-scanner -mode single
 
       - name: Checkmarxone SAST Scanner
         if: ${{ steps.plan.outputs.checkmarxone-sast == 'true' }}
@@ -246,11 +267,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -264,11 +285,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
@@ -284,11 +305,11 @@ jobs:
           RUN_ID: ${{ cloudbees.run_id }}
           JOB_ID: ${{ job.id }}
           STEP_ID: ${{ step.internal.id }}
-          SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
+          CLOUDBEES_SUPPRESS_SCANNER_LOGS: ${{ steps.plan.outputs['EDGE_REDACTION_SUPPRESS_CODE_SCANNER_LOGS'] || 'false' }}
         continue-on-error: true
         run: |
           # Suppress this step's stdout/stderr unless redaction is explicitly off.
-          if [ "$SUPPRESS_SCANNER_LOGS" != "false" ]; then
+          if [ "$CLOUDBEES_SUPPRESS_SCANNER_LOGS" != "false" ]; then
             echo "Logs retained on-premises as per data residency policy"
             exec >/dev/null 2>&1
           fi
